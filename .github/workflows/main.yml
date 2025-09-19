@@ -49,12 +49,14 @@ jobs:
           # Install ngrok
           brew install --cask ngrok
           
-          # Configure ngrok and start tunnel
+          # Configure ngrok and start tunnel (free plan compatible)
           ngrok authtoken "$NGROK_AUTH_TOKEN"
-          ngrok https 5900 --region in > ngrok.log &
-          sleep 5
+          ngrok tls 5900 --region in --log=stdout > ngrok.log 2>&1 &
+          sleep 8
           echo "====== NGROK VNC CONNECTION DETAILS ======"
-          grep -Eo "https://[0-9a-zA-Z\.\:]+:[0-9]+" ngrok.log || true
+          grep -Eo "tcp://[0-9a-zA-Z\.\-]+:[0-9]+" ngrok.log || \
+          grep -Eo "tls://[0-9a-zA-Z\.\-]+:[0-9]+" ngrok.log || \
+          echo "No endpoint found yet"
           echo "========================================="
           
     - name: Log In Details To VNC Server
