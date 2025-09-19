@@ -51,7 +51,11 @@ jobs:
           
           # Configure ngrok and start tunnel
           ngrok authtoken "$NGROK_AUTH_TOKEN"
-          ngrok https 5900 --region=in &
+          ngrok https 5900 --region in > ngrok.log &
+          sleep 5
+          echo "====== NGROK VNC CONNECTION DETAILS ======"
+          grep -Eo "https://[0-9a-zA-Z\.\:]+:[0-9]+" ngrok.log || true
+          echo "========================================="
           
     - name: Log In Details To VNC Server
       run: |
